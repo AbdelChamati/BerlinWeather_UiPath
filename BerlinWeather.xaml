@@ -1,4 +1,4 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="BerlinWeather" VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="968,3579" sap2010:WorkflowViewState.IdRef="BerlinWeather_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ss="clr-namespace:System.Security;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:uix="http://schemas.uipath.com/workflow/activities/uix" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="BerlinWeather" VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="968,3581" sap2010:WorkflowViewState.IdRef="BerlinWeather_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ss="clr-namespace:System.Security;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:uix="http://schemas.uipath.com/workflow/activities/uix" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
       <x:String>System.Activities</x:String>
@@ -119,7 +119,7 @@
       <AssemblyReference>System.Runtime.InteropServices</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence sap2010:Annotation.AnnotationText="PreCondition: &#xA;&#xA;PostCondition: &#xD;&#xA;&#xA;- Open Web browser at the link: https://www.timeanddate.com/weather/germany/berlin/ext&#xD;&#xA;- Extracting the Weather infos from the Table using Table Extraction activity&#xD;&#xA;- Looping throw the Rows and extract the Date, Max/Min Temperature, Wind Speed and Percipitation.&#xD;&#xA;&#xA;Arguments: &#xD;&#xA;None&#xA;&#xA;" DisplayName="BerlinWeather" sap:VirtualizedContainerService.HintSize="637,3514" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence sap2010:Annotation.AnnotationText="PreCondition: &#xA;&#xA;PostCondition: &#xD;&#xA;&#xA;- Open Web browser at the link: https://www.timeanddate.com/weather/germany/berlin/ext&#xD;&#xA;- Extracting the Weather infos from the Table using Table Extraction activity&#xD;&#xA;- Looping throw the Rows and extract the Date, Max/Min Temperature, Wind Speed and Percipitation.&#xD;&#xA;&#xA;Arguments: &#xD;&#xA;None&#xA;&#xA;" DisplayName="BerlinWeather" sap:VirtualizedContainerService.HintSize="637,3516" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="sd:DataTable" Name="dt_WeatherDataTable" />
       <Variable x:TypeArguments="x:Int32" Name="int_RowIndex" />
@@ -141,13 +141,13 @@
     </sap:WorkflowViewStateService.ViewState>
     <ui:GetRobotCredential TimeoutMS="{x:Null}" AssetName="GmailTempCredentials" CacheStrategy="None" DisplayName="Get Credential" FolderPath="chamati@live.com's workspace" sap:VirtualizedContainerService.HintSize="575,183" sap2010:WorkflowViewState.IdRef="GetRobotCredential_1" Password="[secStr_Password]" Username="[str_UserName]" />
     <ui:LogMessage DisplayName="Log Message | Start" sap:VirtualizedContainerService.HintSize="575,181" sap2010:WorkflowViewState.IdRef="LogMessage_4" Message="[&quot;### Start Berlin Weather ###&quot;]" />
-    <uix:NApplicationCard AttachMode="ByInstance" CloseMode="Never" DisplayName="Use Browser Chrome: Berlin, Germany 14 day weather forecast" sap:VirtualizedContainerService.HintSize="575,1076" sap2010:WorkflowViewState.IdRef="NApplicationCard_1" InteractionMode="Simulate" OpenMode="IfNotOpen" ScopeGuid="74755d99-e7f9-4781-bd26-5f9fe4254f33" Version="V2" WindowResize="Maximize">
+    <uix:NApplicationCard AttachMode="ByInstance" CloseMode="Never" DisplayName="Use Browser Chrome: Berlin, Germany 14 day weather forecast" sap:VirtualizedContainerService.HintSize="575,1078" sap2010:WorkflowViewState.IdRef="NApplicationCard_1" InteractionMode="Simulate" OpenMode="IfNotOpen" ScopeGuid="74755d99-e7f9-4781-bd26-5f9fe4254f33" Version="V2" WindowResize="Maximize">
       <uix:NApplicationCard.Body>
         <ActivityAction x:TypeArguments="x:Object">
           <ActivityAction.Argument>
             <DelegateInArgument x:TypeArguments="x:Object" Name="WSSessionData" />
           </ActivityAction.Argument>
-          <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="416,819" sap2010:WorkflowViewState.IdRef="Sequence_2">
+          <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="416,821" sap2010:WorkflowViewState.IdRef="Sequence_2">
             <sap:WorkflowViewStateService.ViewState>
               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
