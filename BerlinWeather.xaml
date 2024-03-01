@@ -1,4 +1,4 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="BerlinWeather" VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="968,3581" sap2010:WorkflowViewState.IdRef="BerlinWeather_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ss="clr-namespace:System.Security;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:uix="http://schemas.uipath.com/workflow/activities/uix" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="BerlinWeather" VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="990,4508" sap2010:WorkflowViewState.IdRef="BerlinWeather_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ss="clr-namespace:System.Security;assembly=System.Private.CoreLib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:uix="http://schemas.uipath.com/workflow/activities/uix" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
       <x:String>System.Activities</x:String>
@@ -47,6 +47,8 @@
       <x:String>UiPath.Mail.Activities.Utils</x:String>
       <x:String>System.Security</x:String>
       <x:String>UiPath.Mail.SMTP.Activities</x:String>
+      <x:String>UiPath.Excel</x:String>
+      <x:String>UiPath.Excel.Activities</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -117,9 +119,10 @@
       <AssemblyReference>UiPath.System.Activities.Design</AssemblyReference>
       <AssemblyReference>UiPath.System.Activities.ViewModels</AssemblyReference>
       <AssemblyReference>System.Runtime.InteropServices</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence sap2010:Annotation.AnnotationText="PreCondition: &#xA;&#xA;PostCondition: &#xD;&#xA;&#xA;- Open Web browser at the link: https://www.timeanddate.com/weather/germany/berlin/ext&#xD;&#xA;- Extracting the Weather infos from the Table using Table Extraction activity&#xD;&#xA;- Looping throw the Rows and extract the Date, Max/Min Temperature, Wind Speed and Percipitation.&#xD;&#xA;&#xA;Arguments: &#xD;&#xA;None&#xA;&#xA;" DisplayName="BerlinWeather" sap:VirtualizedContainerService.HintSize="637,3516" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence sap2010:Annotation.AnnotationText="PreCondition: &#xA;&#xA;PostCondition: &#xA;&#xA;- Open Web browser at the link: https://www.timeanddate.com/weather/germany/berlin/ext&#xA;- Extracting the Weather infos from the Table using Table Extraction activity&#xA;- Looping throw the Rows and extract the Date, Max/Min Temperature, Wind Speed and Percipitation.&#xA;&#xA;Arguments: &#xA;None&#xA;&#xA;" DisplayName="BerlinWeather" sap:VirtualizedContainerService.HintSize="912,4443" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="sd:DataTable" Name="dt_WeatherDataTable" />
       <Variable x:TypeArguments="x:Int32" Name="int_RowIndex" />
@@ -132,6 +135,7 @@
       <Variable x:TypeArguments="ss:SecureString" Name="secStr_Password" />
       <Variable x:TypeArguments="x:String" Name="str_Introduction" />
       <Variable x:TypeArguments="x:String" Name="str_emailBody" />
+      <Variable x:TypeArguments="scg:Dictionary(x:String, x:Object)" Name="Config" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -139,33 +143,41 @@
         <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <ui:GetRobotCredential TimeoutMS="{x:Null}" AssetName="GmailTempCredentials" CacheStrategy="None" DisplayName="Get Credential" FolderPath="chamati@live.com's workspace" sap:VirtualizedContainerService.HintSize="575,183" sap2010:WorkflowViewState.IdRef="GetRobotCredential_1" Password="[secStr_Password]" Username="[str_UserName]" />
-    <ui:LogMessage DisplayName="Log Message | Start" sap:VirtualizedContainerService.HintSize="575,181" sap2010:WorkflowViewState.IdRef="LogMessage_4" Message="[&quot;### Start Berlin Weather ###&quot;]" />
-    <uix:NApplicationCard AttachMode="ByInstance" CloseMode="Never" DisplayName="Use Browser Chrome: Berlin, Germany 14 day weather forecast" sap:VirtualizedContainerService.HintSize="575,1078" sap2010:WorkflowViewState.IdRef="NApplicationCard_1" InteractionMode="Simulate" OpenMode="IfNotOpen" ScopeGuid="74755d99-e7f9-4781-bd26-5f9fe4254f33" Version="V2" WindowResize="Maximize">
+    <ui:LogMessage DisplayName="Log Message | Start Process" sap:VirtualizedContainerService.HintSize="850,181" sap2010:WorkflowViewState.IdRef="LogMessage_4" Message="[&quot;### Start Berlin Weather ###&quot;]" />
+    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="InitAllSettings.xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="850,153" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="InitAllSettings.xaml">
+      <ui:InvokeWorkflowFile.Arguments>
+        <InArgument x:TypeArguments="x:String" x:Key="in_ConfigFile">Data\Config.xlsx</InArgument>
+        <InArgument x:TypeArguments="s:String[]" x:Key="in_ConfigSheets">[{"Settings","Constants"}]</InArgument>
+        <OutArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="out_Config">[Config]</OutArgument>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+    <ui:GetRobotCredential TimeoutMS="{x:Null}" AssetName="[Config(&quot;GmailCredential&quot;).ToString]" CacheStrategy="None" DisplayName="Get Credential | Mail Credentials" FolderPath="[Config(&quot;OrchestratorFolder&quot;).ToString]" sap:VirtualizedContainerService.HintSize="850,183" sap2010:WorkflowViewState.IdRef="GetRobotCredential_1" Password="[secStr_Password]" Username="[str_UserName]" />
+    <uix:NApplicationCard AttachMode="ByInstance" CloseMode="Never" DisplayName="Use Browser Chrome: Berlin, Germany 14 day weather forecast" sap:VirtualizedContainerService.HintSize="850,1729" sap2010:WorkflowViewState.IdRef="NApplicationCard_1" InteractionMode="Simulate" OpenMode="IfNotOpen" ScopeGuid="74755d99-e7f9-4781-bd26-5f9fe4254f33" Version="V2" WindowResize="Maximize">
       <uix:NApplicationCard.Body>
         <ActivityAction x:TypeArguments="x:Object">
           <ActivityAction.Argument>
             <DelegateInArgument x:TypeArguments="x:Object" Name="WSSessionData" />
           </ActivityAction.Argument>
-          <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="416,821" sap2010:WorkflowViewState.IdRef="Sequence_2">
+          <Sequence DisplayName="Do | Verify if the cookies popup appers and Ectract the Weather DataTable" sap:VirtualizedContainerService.HintSize="816,1472" sap2010:WorkflowViewState.IdRef="Sequence_2">
             <sap:WorkflowViewStateService.ViewState>
               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
               </scg:Dictionary>
             </sap:WorkflowViewStateService.ViewState>
-            <uix:NCheckState DisplayName="Check App State 'We value your privacy'" sap:VirtualizedContainerService.HintSize="354,92" sap2010:WorkflowViewState.IdRef="NCheckState_1" ScopeIdentifier="74755d99-e7f9-4781-bd26-5f9fe4254f33" Version="V3">
+            <uix:NCheckState sap2010:Annotation.AnnotationText="Checking if the Cookies popup appears" DisplayName="Check App State 'We value your privacy'" sap:VirtualizedContainerService.HintSize="754,743" sap2010:WorkflowViewState.IdRef="NCheckState_1" ScopeIdentifier="74755d99-e7f9-4781-bd26-5f9fe4254f33" Version="V3">
               <uix:NCheckState.IfExists>
-                <Sequence DisplayName="Target appears" sap:VirtualizedContainerService.HintSize="450,270" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                <Sequence DisplayName="Target appears | Cookies popup " sap:VirtualizedContainerService.HintSize="450,455" sap2010:WorkflowViewState.IdRef="Sequence_6">
                   <sap:WorkflowViewStateService.ViewState>
                     <scg:Dictionary x:TypeArguments="x:String, x:Object">
                       <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                     </scg:Dictionary>
                   </sap:WorkflowViewStateService.ViewState>
+                  <ui:LogMessage DisplayName="Log Message | Cookies popup" sap:VirtualizedContainerService.HintSize="388,183" sap2010:WorkflowViewState.IdRef="LogMessage_8" Message="[&quot;Click on Agree to close the popup&quot;]" />
                   <uix:NClick ActivateBefore="True" ClickType="Single" DisplayName="Click 'AGREE'" sap:VirtualizedContainerService.HintSize="388,182" sap2010:WorkflowViewState.IdRef="NClick_1" InteractionMode="DebuggerApi" KeyModifiers="None" MouseButton="Left" ScopeIdentifier="74755d99-e7f9-4781-bd26-5f9fe4254f33" Version="V3">
                     <uix:NClick.Target>
                       <uix:TargetAnchorable BrowserURL="https://www.timeanddate.com/weather/germany/berlin/ext" CvElementArea="973, 751, 337, 43" CvTextArea="1114, 766, 53, 13" CvTextArgument="AGREE" CvType="Button" DesignTimeRectangle="1117, 766, 49, 14" DesignTimeScaleFactor="1" ElementType="Text" FullSelectorArgument="&lt;webctrl aaname='AGREE' tag='SPAN' /&gt;" FuzzySelectorArgument="&lt;webctrl aaname='AGREE' tag='SPAN' type='' class='' check:innerText='AGREE' /&gt;" Guid="a13ac1cb-82e6-4fe4-9fa3-12e49b9ce0d6" InformativeScreenshot="f37e9c45600b5b46a5803c5ce8b06c55.png" ScopeSelectorArgument="&lt;html app='chrome.exe' title='Berlin, Germany 14 day weather forecast' /&gt;" SearchSteps="FuzzySelector, CV" Version="V3" Visibility="Interactive">
                         <uix:TargetAnchorable.Anchors>
-                          <scg:List x:TypeArguments="uix:ITarget" Capacity="4">
+                          <scg:List x:TypeArguments="uix:ITarget" Capacity="1">
                             <uix:Target CvElementArea="973, 751, 337, 43" CvTextArea="1114, 766, 53, 13" CvTextArgument="AGREE" CvType="Button" DesignTimeRectangle="976, 753, 332, 40" ElementType="Button" FullSelectorArgument="&lt;webctrl aaname='AGREE' tag='BUTTON' /&gt;" FuzzySelectorArgument="&lt;webctrl aaname='AGREE' tag='BUTTON' type='' class=' css-47sehv' check:innerText='AGREE' /&gt;" SearchSteps="Selector, FuzzySelector, CV" />
                           </scg:List>
                         </uix:TargetAnchorable.Anchors>
@@ -177,7 +189,7 @@
               <uix:NCheckState.Target>
                 <uix:TargetAnchorable BrowserURL="https://www.timeanddate.com/weather/germany/berlin/ext" DesignTimeRectangle="583, 727, 770, 84" DesignTimeScaleFactor="1" FullSelectorArgument="&lt;webctrl css-selector='body&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div' idx='2' tag='DIV' /&gt;" FuzzySelectorArgument="&lt;webctrl type='' class='qc-cmp2-footer qc-cmp2-footer-overlay qc-cmp2-footer-scrolled' tag='DIV' aaname='' check:innerText='MORE OPTIONS&amp;#xD;&amp;#xA;AGREE' /&gt;" Guid="f5201bca-0bc6-48e1-acb6-85c0041a41ab" InformativeScreenshot="a3bbfdc010f78341402b51f9f2f67f09.png" ScopeSelectorArgument="&lt;html app='chrome.exe' title='Berlin, Germany 14 day weather forecast' /&gt;" SearchSteps="FuzzySelector" Version="V3" Visibility="Interactive">
                   <uix:TargetAnchorable.Anchors>
-                    <scg:List x:TypeArguments="uix:ITarget" Capacity="4">
+                    <scg:List x:TypeArguments="uix:ITarget" Capacity="1">
                       <uix:Target CvTextArea="868, 463, 214, 22" CvTextArgument="We value your privacy" CvType="Text" DesignTimeRectangle="613, 463, 710, 20" ElementType="Text" FullSelectorArgument="&lt;webctrl tag='H2' /&gt;" FuzzySelectorArgument="&lt;webctrl tag='H2' type='' class='' aaname='We value your privacy' check:innerText='We value your privacy' /&gt;" SearchSteps="Selector, FuzzySelector, CV" />
                     </scg:List>
                   </uix:TargetAnchorable.Anchors>
@@ -185,12 +197,13 @@
               </uix:NCheckState.Target>
               <sap:WorkflowViewStateService.ViewState>
                 <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                  <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                   <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                  <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
                 </scg:Dictionary>
               </sap:WorkflowViewStateService.ViewState>
             </uix:NCheckState>
-            <uix:NMouseScroll KeyModifiers="{x:Null}" Direction="Down" DisplayName="Mouse Scroll" sap:VirtualizedContainerService.HintSize="354,277" sap2010:WorkflowViewState.IdRef="NMouseScroll_1" InteractionMode="HardwareEvents" MovementUnits="10" Version="V3">
+            <uix:NMouseScroll KeyModifiers="{x:Null}" Direction="Down" DisplayName="Mouse Scroll | scroll to the Table" sap:VirtualizedContainerService.HintSize="754,277" sap2010:WorkflowViewState.IdRef="NMouseScroll_1" InteractionMode="HardwareEvents" MovementUnits="10" Version="V3">
               <uix:NMouseScroll.SearchedElement>
                 <uix:SearchedElement>
                   <uix:SearchedElement.Target>
@@ -202,17 +215,17 @@
                 </uix:SearchedElement>
               </uix:NMouseScroll.SearchedElement>
             </uix:NMouseScroll>
-            <uix:NExtractData AppendResults="False" ContinueOnError="True" DataTable="[dt_WeatherDataTable]" DisplayName="Extract Table Data" ExtractDataSettings="&lt;Table xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' Type='Table' AddCvHeader='true' IsScrollEnabled='false'&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Day' ReferenceIdx='0' Name='Day'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Conditions' ReferenceIdx='1' Name='Conditions' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Conditions  Src' ReferenceIdx='2' Name='Conditions  Src' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Conditions Temperature' ReferenceIdx='3' Name='Conditions Temperature'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Conditions Weather' ReferenceIdx='4' Name='Conditions Weather'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Comfort Feels Like' ReferenceIdx='5' Name='Comfort Feels Like'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Comfort Wind' ReferenceIdx='6' Name='Comfort Wind'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Comfort' ReferenceIdx='7' Name='Comfort' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Comfort Humidity' ReferenceIdx='8' Name='Comfort Humidity'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Precipitation Chance' ReferenceIdx='9' Name='Precipitation Chance'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Precipitation Amount' ReferenceIdx='10' Name='Precipitation Amount'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Sun UV' ReferenceIdx='11' Name='Sun UV' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Sun Sunrise' ReferenceIdx='12' Name='Sun Sunrise' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Sun Sunset' ReferenceIdx='13' Name='Sun Sunset' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&lt;/Table&gt;" ExtractMetadata="&lt;extract-table get_columns_name='1' get_empty_columns='1' columns_name_source='Longest'&gt;&lt;column name='Day' attr='fulltext' /&gt;&lt;column name='Conditions ' attr='fulltext' name2='Conditions  Src' attr2='src' /&gt;&lt;column name='Conditions Temperature' attr='fulltext' /&gt;&lt;column name='Conditions Weather' attr='fulltext' /&gt;&lt;column name='Comfort Feels Like' attr='fulltext' /&gt;&lt;column name='Comfort Wind' attr='fulltext' /&gt;&lt;column name='Comfort ' attr='fulltext' /&gt;&lt;column name='Comfort Humidity' attr='fulltext' /&gt;&lt;column name='Precipitation Chance' attr='fulltext' /&gt;&lt;column name='Precipitation Amount' attr='fulltext' /&gt;&lt;column name='Sun UV' attr='fulltext' /&gt;&lt;column name='Sun Sunrise' attr='fulltext' /&gt;&lt;column name='Sun Sunset' attr='fulltext' /&gt;&lt;/extract-table&gt;" sap:VirtualizedContainerService.HintSize="354,197" sap2010:WorkflowViewState.IdRef="NExtractData_1" LimitExtractionTo="None" MaximumResults="0" ScopeIdentifier="74755d99-e7f9-4781-bd26-5f9fe4254f33" Version="V3">
+            <uix:NExtractData AppendResults="False" ContinueOnError="True" DataTable="[dt_WeatherDataTable]" DisplayName="Extract The Weather DataTable" ExtractDataSettings="&lt;Table xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' Type='Table' AddCvHeader='true' IsScrollEnabled='false'&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Day' ReferenceIdx='0' Name='Day'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Conditions' ReferenceIdx='1' Name='Conditions' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Conditions  Src' ReferenceIdx='2' Name='Conditions  Src' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Conditions Temperature' ReferenceIdx='3' Name='Conditions Temperature'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Conditions Weather' ReferenceIdx='4' Name='Conditions Weather' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Comfort Feels Like' ReferenceIdx='5' Name='Comfort Feels Like' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Comfort Wind' ReferenceIdx='6' Name='Comfort Wind'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Comfort' ReferenceIdx='7' Name='Comfort' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Comfort Humidity' ReferenceIdx='8' Name='Comfort Humidity' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Precipitation Chance' ReferenceIdx='9' Name='Precipitation Chance'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Precipitation Amount' ReferenceIdx='10' Name='Precipitation Amount' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Sun UV' ReferenceIdx='11' Name='Sun UV' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Sun Sunrise' ReferenceIdx='12' Name='Sun Sunrise' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&#x9;&lt;Column xsi:type='DataColumn' ReferenceName='Sun Sunset' ReferenceIdx='13' Name='Sun Sunset' IsDeleted='true'&gt;&#xA;&#x9;&#x9;&lt;IsValidName&gt;true&lt;/IsValidName&gt;&#xA;&#x9;&#x9;&lt;ValidationErrorMessage /&gt;&#xA;&#x9;&#x9;&lt;IsExtra&gt;false&lt;/IsExtra&gt;&#xA;&#x9;&#x9;&lt;CanExtractSimilar&gt;false&lt;/CanExtractSimilar&gt;&#xA;&#x9;&#x9;&lt;Format xsi:type='TextColumnFormat' /&gt;&#xA;&#x9;&lt;/Column&gt;&#xA;&lt;/Table&gt;" ExtractMetadata="&lt;extract-table get_columns_name='1' get_empty_columns='1' columns_name_source='Longest'&gt;&lt;column name='Day' attr='fulltext' /&gt;&lt;column name='Conditions ' attr='fulltext' name2='Conditions  Src' attr2='src' /&gt;&lt;column name='Conditions Temperature' attr='fulltext' /&gt;&lt;column name='Conditions Weather' attr='fulltext' /&gt;&lt;column name='Comfort Feels Like' attr='fulltext' /&gt;&lt;column name='Comfort Wind' attr='fulltext' /&gt;&lt;column name='Comfort ' attr='fulltext' /&gt;&lt;column name='Comfort Humidity' attr='fulltext' /&gt;&lt;column name='Precipitation Chance' attr='fulltext' /&gt;&lt;column name='Precipitation Amount' attr='fulltext' /&gt;&lt;column name='Sun UV' attr='fulltext' /&gt;&lt;column name='Sun Sunrise' attr='fulltext' /&gt;&lt;column name='Sun Sunset' attr='fulltext' /&gt;&lt;/extract-table&gt;" sap:VirtualizedContainerService.HintSize="754,197" sap2010:WorkflowViewState.IdRef="NExtractData_1" LimitExtractionTo="None" MaximumResults="0" ScopeIdentifier="74755d99-e7f9-4781-bd26-5f9fe4254f33" Version="V3">
               <uix:NExtractData.Target>
-                <uix:TargetAnchorable DesignTimeRectangle="360, 1376, 1193, 828" DesignTimeScaleFactor="1" FullSelectorArgument="&lt;webctrl id='wt-ext' tag='TABLE' /&gt;" Guid="e01c8f27-8243-4a13-97a7-8a6813bc93e3" InformativeScreenshot="5ee537ff91681bb5384d0b95ee37369c.png" ScopeSelectorArgument="&lt;html app='chrome.exe' title='Berlin, Germany 14 day weather forecast' /&gt;" SearchSteps="Selector" Version="V3" Visibility="Interactive" />
+                <uix:TargetAnchorable DesignTimeRectangle="360, 632, 1193, 827" DesignTimeScaleFactor="1" FullSelectorArgument="&lt;webctrl id='wt-ext' tag='TABLE' /&gt;" Guid="2f2b4ca1-3e8a-4f45-a9c8-ad6f09d63656" InformativeScreenshot="5ee537ff91681bb5384d0b95ee37369c.png" ScopeSelectorArgument="&lt;html app='chrome.exe' title='Berlin, Germany 14 day weather forecast' /&gt;" SearchSteps="Selector" Version="V3" Visibility="Interactive" />
               </uix:NExtractData.Target>
             </uix:NExtractData>
-            <ui:LogMessage DisplayName="Log Message | Rows Number" sap:VirtualizedContainerService.HintSize="354,168" sap2010:WorkflowViewState.IdRef="LogMessage_1" Message="[&quot;The Rows Number in the Table is: &quot; + dt_WeatherDataTable.Rows.Count.ToString]" />
+            <ui:LogMessage DisplayName="Log Message | Rows Number" sap:VirtualizedContainerService.HintSize="754,168" sap2010:WorkflowViewState.IdRef="LogMessage_1" Message="[&quot;The Rows Number in the Table is: &quot; + dt_WeatherDataTable.Rows.Count.ToString]" />
           </Sequence>
         </ActivityAction>
       </uix:NApplicationCard.Body>
       <uix:NApplicationCard.TargetApp>
-        <uix:TargetApp Area="-8, -8, 1936, 1048" BrowserType="Chrome" IconBase64="iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAMSSURBVFhHvZfPTxNBFMe5eeUPMJHEmyfuJoZ482DgYow9cWmv0pNeCDVcbKIRk/bgD4LlJjYhSkwgYAhqCDFGSPSAtoRqxUZCC+0CjSh9vu/s23a33Sm7pfBJvul03uy878zOzs52tAoRdbG6WT2iLgmdHJykk3WTNc/aZulAHO3aZ4o7Q/IhVrPEOsZYxzPDHWBErSSvZ0i69AdfiFG0k3WW91nhxsvqsvbjzQg3eqCanxww0inpGuEgFqB3dleIigum/DEpKZ1wAM+9P5bO1ARD/uiT1DW48pkZa+RXKSWlOuwmXGajUi5JyZV1SW3CFa6zUP5r0NRqjG7PXKa1vMtIm5g4LPyk/N1LSihr6BULykTErHPy+ENYGYCibwPKlIMmJrYfBWjz1nklGNEwLxaUCddH8n0mWTUBjX8alIigMbE7+7BqADKmhiXiSicMYFvWMvE56jDycWNaIkzhJdHmuCkBU283sMWzUCkXJepKL0zgDagFtyC6cEMZiLy56r42bPwrZFViywT+H8EATPSZZT0bpTQllgepsJ+TmuZU9ou0+2qY9t952vlHYKLfLBPNZAwa/ZKnbOlAatpLpbhH5SdzVH46JzWKMYeJ669/0LnRVaUrkxlXQ8lkUkresBIXr92jrbMhpfyFAVUvKBPqdiCZZcCuO0u/Ea4SjUZ9GSlPLFaT23Ww+FVaUAQm1EZV/HPIM/G9wcRMxrnrGYZBwWCQVlacCzSXyymD9WDE9QZ2eFYOs1vSQjYsLlQPLlnjgF5821GGLj5fU+bqQcJwOKx+LQKBAKVS7ts7kkJ796fst8Gi2zKhfW/oSKfTakYwM7FYjBKJhER8UXt/8J+me4UOrI1QKETxeFxqfDMmFky4AocN30xP23ZQ/zhPWVxRfVRPCecsWHAA3wyngf6siQCrHUf8o2g8VdnhBi0tUh9EJFVzuCF20ZOYEW8GLPgC3JqWnhgXMKB+6doffCEOPK5HPx9gsR/vexSgExZ2Va8zg5GPsHqki/aCjln4UMaJBaO0hP+oR1z/hdVAR8d/adSMyX3u9kwAAAAASUVORK5CYII=" InformativeScreenshot="1b4fc0a4b1d13b92ad908a1f76a1db77.jpg" Selector="&lt;html app='chrome.exe' title='Berlin, Germany 14 day weather forecast' /&gt;" Title="Berlin, Germany 14 day weather forecast" Url="https://www.timeanddate.com/weather/germany/berlin/ext" />
+        <uix:TargetApp Area="-8, -8, 1936, 1048" BrowserType="Chrome" IconBase64="iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAMSSURBVFhHvZfPTxNBFMe5eeUPMJHEmyfuJoZ482DgYow9cWmv0pNeCDVcbKIRk/bgD4LlJjYhSkwgYAhqCDFGSPSAtoRqxUZCC+0CjSh9vu/s23a33Sm7pfBJvul03uy878zOzs52tAoRdbG6WT2iLgmdHJykk3WTNc/aZulAHO3aZ4o7Q/IhVrPEOsZYxzPDHWBErSSvZ0i69AdfiFG0k3WW91nhxsvqsvbjzQg3eqCanxww0inpGuEgFqB3dleIigum/DEpKZ1wAM+9P5bO1ARD/uiT1DW48pkZa+RXKSWlOuwmXGajUi5JyZV1SW3CFa6zUP5r0NRqjG7PXKa1vMtIm5g4LPyk/N1LSihr6BULykTErHPy+ENYGYCibwPKlIMmJrYfBWjz1nklGNEwLxaUCddH8n0mWTUBjX8alIigMbE7+7BqADKmhiXiSicMYFvWMvE56jDycWNaIkzhJdHmuCkBU283sMWzUCkXJepKL0zgDagFtyC6cEMZiLy56r42bPwrZFViywT+H8EATPSZZT0bpTQllgepsJ+TmuZU9ou0+2qY9t952vlHYKLfLBPNZAwa/ZKnbOlAatpLpbhH5SdzVH46JzWKMYeJ669/0LnRVaUrkxlXQ8lkUkresBIXr92jrbMhpfyFAVUvKBPqdiCZZcCuO0u/Ea4SjUZ9GSlPLFaT23Ww+FVaUAQm1EZV/HPIM/G9wcRMxrnrGYZBwWCQVlacCzSXyymD9WDE9QZ2eFYOs1vSQjYsLlQPLlnjgF5821GGLj5fU+bqQcJwOKx+LQKBAKVS7ts7kkJ796fst8Gi2zKhfW/oSKfTakYwM7FYjBKJhER8UXt/8J+me4UOrI1QKETxeFxqfDMmFky4AocN30xP23ZQ/zhPWVxRfVRPCecsWHAA3wyngf6siQCrHUf8o2g8VdnhBi0tUh9EJFVzuCF20ZOYEW8GLPgC3JqWnhgXMKB+6doffCEOPK5HPx9gsR/vexSgExZ2Va8zg5GPsHqki/aCjln4UMaJBaO0hP+oR1z/hdVAR8d/adSMyX3u9kwAAAAASUVORK5CYII=" InformativeScreenshot="1b4fc0a4b1d13b92ad908a1f76a1db77.jpg" Selector="&lt;html app='chrome.exe' title='Berlin, Germany 14 day weather forecast' /&gt;" Title="Berlin, Germany 14 day weather forecast" Url="[Config(&quot;WeatherLink&quot;).ToString]" />
       </uix:NApplicationCard.TargetApp>
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -221,12 +234,12 @@
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
     </uix:NApplicationCard>
-    <Assign sap2010:Annotation.AnnotationText="Initialize HTML Table: create an HTML table structure as a string variable. This table will be used to format the weather data." DisplayName="Assign | str_htmlTable" sap:VirtualizedContainerService.HintSize="575,164" sap2010:WorkflowViewState.IdRef="Assign_3">
+    <Assign sap2010:Annotation.AnnotationText="Initialize HTML Table: create an HTML table structure as a string variable. This table will be used to format the weather data." DisplayName="Assign | str_htmlTable" sap:VirtualizedContainerService.HintSize="850,164" sap2010:WorkflowViewState.IdRef="Assign_3">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[str_htmlTable]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:String">["&lt;table border='1'&gt;&lt;thead&gt;&lt;th&gt;Date&lt;/th&gt;&lt;th&gt;Max/Min Temperature&lt;/th&gt;&lt;th&gt;Wind Speed&lt;/th&gt;&lt;th&gt;Precipitation&lt;/th&gt;&lt;/thead&gt;"]</InArgument>
+        <InArgument x:TypeArguments="x:String">["&lt;table border='1'&gt;&lt;thead&gt;&lt;th style='background-color: yellow'&gt;Date&lt;/th&gt;&lt;th style='background-color: yellow'&gt;Max/Min Temperature&lt;/th&gt;&lt;th style='background-color: yellow'&gt;Wind Speed&lt;/th&gt;&lt;th style='background-color: yellow'&gt;Precipitation&lt;/th&gt;&lt;/thead&gt;"]</InArgument>
       </Assign.Value>
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -234,13 +247,13 @@
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
     </Assign>
-    <ui:ForEachRow ColumnNames="{x:Null}" CurrentIndex="[int_RowIndex]" DataTable="[dt_WeatherDataTable]" DisplayName="For Each Row in Data Table" sap:VirtualizedContainerService.HintSize="575,866" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+    <ui:ForEachRow ColumnNames="{x:Null}" sap2010:Annotation.AnnotationText="Exctracting the Max/Min Temperature, Wind Speed and Precipitation for the next 14 Days" Condition="[int_RowIndex &lt; 13]" CurrentIndex="[int_RowIndex]" DataTable="[dt_WeatherDataTable]" DisplayName="For Each Row in Data Table | Extracting the required infos for the Weather" sap:VirtualizedContainerService.HintSize="850,897" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
       <ui:ForEachRow.Body>
         <ActivityAction x:TypeArguments="sd:DataRow">
           <ActivityAction.Argument>
             <DelegateInArgument x:TypeArguments="sd:DataRow" Name="dr_Weather" />
           </ActivityAction.Argument>
-          <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="541,662" sap2010:WorkflowViewState.IdRef="Sequence_3">
+          <Sequence DisplayName="Body | Weather Infos and Body E-mail construction" sap:VirtualizedContainerService.HintSize="541,662" sap2010:WorkflowViewState.IdRef="Sequence_3">
             <sap:WorkflowViewStateService.ViewState>
               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -301,17 +314,37 @@
           </Sequence>
         </ActivityAction>
       </ui:ForEachRow.Body>
-      <ui:ForEachRow.Condition>
-        <VisualBasicValue x:TypeArguments="x:Boolean" DisplayName="Visual basic value" ExpressionText="int_RowIndex &lt; 13" />
-      </ui:ForEachRow.Condition>
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
     </ui:ForEachRow>
-    <Assign sap2010:Annotation.AnnotationText="Append Table Rows to HTML Table: Append the HTML table rows to the HTML table variable." DisplayName="Assign | Append Table Rows to HTML" sap:VirtualizedContainerService.HintSize="575,164" sap2010:WorkflowViewState.IdRef="Assign_5">
+    <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="850,92" sap2010:WorkflowViewState.IdRef="CommentOut_1">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="416,221" sap2010:WorkflowViewState.IdRef="Sequence_7">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="WriteExcel.xaml - Invoke Workflow File" sap:VirtualizedContainerService.HintSize="354,136" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="WriteExcel.xaml">
+            <ui:InvokeWorkflowFile.Arguments>
+              <InArgument x:TypeArguments="sd:DataTable" x:Key="in_dt_WeatherDataTable">[dt_WeatherDataTable]</InArgument>
+            </ui:InvokeWorkflowFile.Arguments>
+          </ui:InvokeWorkflowFile>
+        </Sequence>
+      </ui:CommentOut.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:CommentOut>
+    <Assign sap2010:Annotation.AnnotationText="Append Table Rows to HTML Table: Append the HTML table rows to the HTML table variable." DisplayName="Assign | Append Table Rows to HTML" sap:VirtualizedContainerService.HintSize="850,164" sap2010:WorkflowViewState.IdRef="Assign_5">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[str_htmlTable]</OutArgument>
       </Assign.To>
@@ -324,27 +357,27 @@
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
     </Assign>
-    <Assign DisplayName="Assign | str_introduction" sap:VirtualizedContainerService.HintSize="575,122" sap2010:WorkflowViewState.IdRef="Assign_6">
+    <Assign DisplayName="Assign | str_introduction" sap:VirtualizedContainerService.HintSize="850,122" sap2010:WorkflowViewState.IdRef="Assign_6">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[str_Introduction]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:String">["Her is the weather forcast for the next 14 days"]</InArgument>
+        <InArgument x:TypeArguments="x:String">[Config("Introduction").ToString]</InArgument>
       </Assign.Value>
     </Assign>
-    <Assign DisplayName="Assign | str_emailBody" sap:VirtualizedContainerService.HintSize="575,122" sap2010:WorkflowViewState.IdRef="Assign_7">
+    <Assign DisplayName="Assign | str_emailBody" sap:VirtualizedContainerService.HintSize="850,122" sap2010:WorkflowViewState.IdRef="Assign_7">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[str_emailBody]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:String">[String.Concat(str_Introduction, "&lt;br/&gt;","&lt;br/&gt;","&lt;br/&gt;", str_htmlTable, "&lt;br/&gt;","&lt;br/&gt;","&lt;br/&gt;", "Best Regards, ","&lt;br/&gt;", "Mr. Bot")]</InArgument>
+        <InArgument x:TypeArguments="x:String">[String.Concat("Dear ",Config("ReceiverLastName").ToString, ",", "&lt;br/&gt;","&lt;br/&gt;",str_Introduction, "&lt;br/&gt;","&lt;br/&gt;","&lt;br/&gt;", str_htmlTable, "&lt;br/&gt;","&lt;br/&gt;","&lt;br/&gt;", "Best Regards, ","&lt;br/&gt;", "Mr. Bot")]</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" ContinueOnError="{x:Null}" MailMessage="{x:Null}" Password="{x:Null}" ReplyTo="{x:Null}" Result="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Body="[str_emailBody]" DisplayName="Send SMTP Mail Message" Email="[str_UserName]" EnableSSL="True" From="abdelilah.chamati@gmail.com" sap:VirtualizedContainerService.HintSize="575,192" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="True" Name="Mr. Bot" Port="465" SecureConnection="Auto" SecurePassword="[secStr_Password]" Server="smtp.gmail.com" Subject="Weather forecast for Berlin (14 days)" To="chamati@live.com">
+    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" ContinueOnError="{x:Null}" MailMessage="{x:Null}" Password="{x:Null}" ReplyTo="{x:Null}" Result="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Body="[str_emailBody]" DisplayName="Send SMTP Mail Message | Sending the Email " Email="[str_UserName]" EnableSSL="True" From="[Config(&quot;EmailSender&quot;).ToString]" sap:VirtualizedContainerService.HintSize="850,192" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="True" Name="[Config(&quot;SenderName&quot;).ToString]" Port="[CInt(Config(&quot;GmailPort&quot;).ToString)]" SecureConnection="Auto" SecurePassword="[secStr_Password]" Server="[Config(&quot;GmailServer&quot;).ToString]" Subject="[Config(&quot;EmailSubject&quot;).ToString]" To="[Config(&quot;EmailReceiver&quot;).ToString]">
       <ui:SendMail.Files>
         <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
       </ui:SendMail.Files>
     </ui:SendMail>
-    <ui:LogMessage DisplayName="Log Message | End" sap:VirtualizedContainerService.HintSize="575,164" sap2010:WorkflowViewState.IdRef="LogMessage_5" Message="[&quot;### End Berlin Weather ###&quot;]" />
+    <ui:LogMessage DisplayName="Log Message | End Process" sap:VirtualizedContainerService.HintSize="850,164" sap2010:WorkflowViewState.IdRef="LogMessage_5" Message="[&quot;### End Berlin Weather ###&quot;]" />
   </Sequence>
 </Activity>
